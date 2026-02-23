@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokéClub: Unova Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <style>
+        .bg-unova { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; }
+        .tab-active { border-bottom: 3px solid #ef4444; color: #ef4444; }
+    </style>
+</head>
+<body class="bg-unova min-h-screen font-sans text-slate-900 pb-10">
+
+    <header class="bg-slate-900 text-white p-4 shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-black tracking-tighter flex items-center gap-2">
+                <i data-lucide="shield-check" class="text-red-500"></i> POKÉCLUB
+            </h1>
+            <button onclick="toggleModal('modal-regras')" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest transition">
+                Instruções
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 max-w-2xl">
+        
+        <section class="mb-6 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+            <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <i data-lucide="map" class="w-3"></i> Localização do Grupo
+            </h2>
+            <div class="relative flex justify-between px-2">
+                <div class="absolute top-5 left-0 w-full h-1 bg-slate-100 z-0"></div>
+                
+                <div class="relative z-10 flex flex-col items-center w-1/3">
+                    <div class="w-10 h-10 bg-white border-4 border-slate-900 rounded-full flex items-center justify-center mb-2 shadow-sm">
+                        <i data-lucide="home" class="w-4 text-slate-900"></i>
+                    </div>
+                    <span class="text-[9px] font-bold uppercase text-slate-500">Nuvema</span>
+                    <div id="list-nuvema" class="flex flex-wrap justify-center gap-1 mt-3 min-h-[40px]"></div>
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center w-1/3">
+                    <div class="w-10 h-10 bg-white border-4 border-slate-400 rounded-full flex items-center justify-center mb-2 shadow-sm">
+                        <i data-lucide="trees" class="w-4 text-slate-400"></i>
+                    </div>
+                    <span class="text-[9px] font-bold uppercase text-slate-500">Rotas 1/2</span>
+                    <div id="list-rotas" class="flex flex-wrap justify-center gap-1 mt-3 min-h-[40px]"></div>
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center w-1/3">
+                    <div class="w-10 h-10 bg-white border-4 border-red-600 rounded-full flex items-center justify-center mb-2 shadow-sm animate-pulse">
+                        <i data-lucide="medal" class="w-4 text-red-600"></i>
+                    </div>
+                    <span class="text-[9px] font-bold uppercase text-red-600 tracking-wider">Ginásio 1</span>
+                    <div id="list-ginasio" class="flex flex-wrap justify-center gap-1 mt-3 min-h-[40px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
+            <div class="bg-slate-50 border-b p-4 flex justify-around">
+                <button onclick="changeTab('perfil')" id="tab-perfil" class="text-xs font-bold uppercase pb-1 tab-active">1. Perfil</button>
+                <button onclick="changeTab('pokedex')" id="tab-pokedex" class="text-xs font-bold uppercase pb-1 text-slate-400">2. Dex/Time</button>
+            </div>
+
+            <div id="content-perfil" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 gap-4">
+                    <input type="text" id="nome" class="w-full border-2 border-slate-100 p-3 rounded-2xl focus:border-red-500 outline-none transition font-medium" placeholder="O seu Nome">
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="versao" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
+                            <option value="Black">Pokémon Black</option>
+                            <option value="White">Pokémon White</option>
+                        </select>
+                        <select id="inicial" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
+                            <option value="Snivy">Snivy 🍃</option>
+                            <option value="Tepig">Tepig 🔥</option>
+                            <option value="Oshawott">Oshawott 💧</option>
+                        </select>
+                    </div>
+                    <select id="progresso" class="w-full border-2 border-slate-100 p-4 rounded-2xl bg-slate-900 text-white font-bold">
+                        <option value="nuvema">🏠 Nuvema Town (Início)</option>
+                        <option value="rotas">🌿 Rota 1 ou 2</option>
+                        <option value="ginasio">🏅 Venci o 1º Ginásio!</option>
+                    </select>
+                </div>
+                <button onclick="changeTab('pokedex')" class="w-full py-3 text-slate-400 text-xs font-bold uppercase">Próximo Passo: Pokédex ➔</button>
+            </div>
+
+            <div id="content-pokedex" class="hidden p-6 space-y-6">
+                <div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Pokédex (Capturados)</h3>
+                    <div id="pokedex-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        </div>
+                </div>
+
+                <div class="border-t pt-6">
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">A Minha Equipa (Max 6)</h3>
+                    <div id="team-list" class="space-y-2">
+                        <p class="text-[10px] text-slate-400 italic">Selecione pokémons na Pokédex acima para adicionar à equipa.</p>
+                    </div>
+                </div>
+
+                <button onclick="salvarTudo()" id="btn-final" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg hover:bg-red-700 transition active:scale-95">
+                    SALVAR JORNADA NO GRUPO
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal-regras" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl relative">
+            <h2 class="text-2xl font-black mb-6 text-slate-900 leading-tight">INSTRUÇÕES DO CLUBE</h2>
+            <div class="space-y-4 text-sm text-slate-600">
+                <p class="flex gap-3"><i data-lucide="calendar" class="text-red-500 w-8"></i> <strong>Prazo:</strong> 23/02 a 01/03 (Até ao 1º Ginásio).</p>
+                <p class="flex gap-3"><i data-lucide="eye-off" class="text-red-500 w-8"></i> <strong>Spoilers:</strong> Proibido antecipar eventos futuros!</p>
+                <p class="flex gap-3"><i data-lucide="refresh-cw" class="text-red-500 w-8"></i> <strong>Trocas:</strong> Apenas via GTS entre o grupo e com pokémon da área.</p>
+                <p class="flex gap-3"><i data-lucide="zap-off" class="text-red-500 w-8"></i> <strong>Mods:</strong> Apenas versões originais (Black/White).</p>
+            </div>
+            <button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black tracking-widest uppercase">Entendido!</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO FIREBASE
+        const firebaseConfig = { databaseURL: "https://clube-pokemon-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        lucide.createIcons();
+
+        const pokesDisponiveis = ["Patrat", "Lillipup", "Purrloin", "Pansage", "Pansear", "Panpour", "Munna", "Roggenrola", "Woobat", "Audino"];
+        let capturados = [];
+        let team = [];
+
+        // Iniciar Pokédex
+        const dexGrid = document.getElementById('pokedex-grid');
+        pokesDisponiveis.forEach(pk => {
+            dexGrid.innerHTML += `
+                <label class="flex items-center gap-2 border p-2 rounded-xl cursor-pointer hover:bg-slate-50 transition text-xs font-medium">
+                    <input type="checkbox" onchange="updateDex(this)" value="${pk}" class="w-4 h-4 rounded border-slate-300"> ${pk}
+                </label>
+            `;
+        });
+
+        function changeTab(tab) {
+            document.getElementById('content-perfil').classList.toggle('hidden', tab !== 'perfil');
+            document.getElementById('content-pokedex').classList.toggle('hidden', tab !== 'pokedex');
+            document.getElementById('tab-perfil').classList.toggle('tab-active', tab === 'perfil');
+            document.getElementById('tab-pokedex').classList.toggle('tab-active', tab === 'pokedex');
+        }
+
+        function updateDex(el) {
+            if(el.checked) capturados.push(el.value);
+            else {
+                capturados = capturados.filter(p => p !== el.value);
+                team = team.filter(t => t.species !== el.value);
+            }
+            renderTeamInputs();
+        }
+
+        function renderTeamInputs() {
+            const container = document.getElementById('team-list');
+            container.innerHTML = "";
+            
+            // Adicionar Inicial sempre
+            const inicial = document.getElementById('inicial').value;
+            if(!team.find(t => t.species === inicial)) team.push({species: inicial, level: 5});
+
+            capturados.forEach(pk => {
+                if(!team.find(t => t.species === pk)) team.push({species: pk, level: 1});
+            });
+
+            team.slice(0, 6).forEach((member, index) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold">${member.species}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] uppercase font-bold text-slate-400">Lv.</span>
+                            <input type="number" value="${member.level}" onchange="team[${index}].level = this.value" class="w-12 p-1 rounded border text-center text-xs">
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+        function salvarTudo() {
+            const nome = document.getElementById('nome').value.trim();
+            if(!nome) return alert("Escreva o seu nome!");
+
+            const btn = document.getElementById('btn-final');
+            btn.innerText = "A GUARDAR...";
+            
+            db.ref('jogadores/' + nome).set({
+                nome,
+                versao: document.getElementById('versao').value,
+                inicial: document.getElementById('inicial').value,
+                progresso: document.getElementById('progresso').value,
+                capturados,
+                team: team.slice(0, 6),
+                updateAt: Date.now()
+            }).then(() => {
+                btn.innerText = "SALVAR JORNADA NO GRUPO";
+                alert("Dados sincronizados com o grupo!");
+                changeTab('perfil');
+            });
+        }
+
+        // LER DADOS DO GRUPO
+        db.ref('jogadores').on('value', (snap) => {
+            const listIds = ['list-nuvema', 'list-rotas', 'list-ginasio'];
+            listIds.forEach(id => document.getElementById(id).innerHTML = "");
+
+            const data = snap.val();
+            if(data) {
+                Object.values(data).forEach(p => {
+                    const color = p.versao === 'Black' ? 'bg-slate-900' : 'bg-white border-2 border-slate-200 text-slate-900';
+                    const html = `
+                        <div class="group relative">
+                            <div class="w-8 h-8 rounded-full ${color} text-[9px] flex items-center justify-center font-black shadow-sm cursor-pointer">
+                                ${p.nome.substring(0,2).toUpperCase()}
+                            </div>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 scale-0 group-hover:scale-100 transition-all z-50">
+                                <div class="bg-slate-900 text-white text-[10px] p-3 rounded-xl shadow-2xl min-w-[120px]">
+                                    <p class="font-bold border-b border-slate-700 pb-1 mb-1 text-red-500">${p.nome}</p>
+                                    <p>Dex: ${p.capturados ? p.capturados.length : 0} pokes</p>
+                                    <p class="mt-1 text-slate-400">Time: ${p.team ? p.team.map(t => t.species).join(', ') : ''}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('list-' + p.progresso).innerHTML += html;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

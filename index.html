@@ -8,16 +8,24 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         .bg-unova { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; }
         .tab-active { border-bottom: 3px solid #ef4444; color: #ef4444; font-weight: 900; }
-        .gts-step { border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem; }
+        .map-wrapper { position: relative; width: 100%; max-width: 600px; margin: 0 auto; background-color: #e2e8f0; border-radius: 1.5rem; overflow: hidden; border: 4px solid #1e293b; }
+        .map-image { width: 100%; display: block; content: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/494.png'); background: #cbd5e1; height: 300px; display: flex; align-items: center; justify-content: center; } /* Placeholder para o seu arquivo local 'Mapa de unova.png' */
+        .map-spot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-wrap: wrap; gap: 2px; max-width: 80px; justify-content: center; z-index: 20; }
+        .gts-step { border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem; }
+        /* Esconder scrollbar das abas no mobile */
+        nav::-webkit-scrollbar { display: none; }
+        nav { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-unova min-h-screen font-sans text-slate-900 pb-10">
 
     <header class="bg-slate-900 text-white p-4 shadow-xl sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="container mx-auto flex justify-between items-center text-center">
             <h1 class="text-xl font-black tracking-tighter flex items-center gap-2">
                 <i data-lucide="shield-check" class="text-red-500"></i> POKÉCLUB
             </h1>
@@ -29,35 +37,39 @@
     </header>
 
     <main class="container mx-auto p-4 max-w-2xl">
+        
         <section class="mb-6 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
             <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
-                <i data-lucide="map" class="w-3"></i> Jornada do Grupo (Semana 1)
+                <i data-lucide="map" class="w-3"></i> Status da Jornada
             </h2>
-            <div class="relative flex justify-between px-2">
+            <div class="relative flex justify-between px-2 text-center">
                 <div class="absolute top-5 left-0 w-full h-1 bg-slate-100 z-0"></div>
-                <div class="relative z-10 flex flex-col items-center w-1/3">
-                    <div class="w-10 h-10 bg-white border-4 border-slate-900 rounded-full flex items-center justify-center mb-2 shadow-sm"><i data-lucide="home" class="w-4 text-slate-900"></i></div>
+                <div class="relative z-10 w-1/3">
+                    <div class="w-10 h-10 bg-white border-4 border-slate-900 rounded-full flex items-center justify-center mb-2 mx-auto shadow-sm"><i data-lucide="home" class="w-4"></i></div>
                     <span class="text-[9px] font-bold uppercase text-slate-500">Nuvema</span>
-                    <div id="list-nuvema" class="flex flex-wrap justify-center gap-1 mt-3 min-h-[40px]"></div>
+                    <div id="list-nuvema" class="flex flex-wrap justify-center gap-1 mt-3"></div>
                 </div>
-                <div class="relative z-10 flex flex-col items-center w-1/3">
-                    <div class="w-10 h-10 bg-white border-4 border-slate-400 rounded-full flex items-center justify-center mb-2 shadow-sm"><i data-lucide="trees" class="w-4 text-slate-400"></i></div>
-                    <span class="text-[9px] font-bold uppercase text-slate-500">Rotas 1/2</span>
-                    <div id="list-rotas" class="flex flex-wrap justify-center gap-1 mt-3 min-h-[40px]"></div>
+                <div class="relative z-10 w-1/3">
+                    <div class="w-10 h-10 bg-white border-4 border-slate-400 rounded-full flex items-center justify-center mb-2 mx-auto shadow-sm"><i data-lucide="trees" class="w-4"></i></div>
+                    <span class="text-[9px] font-bold uppercase text-slate-500">Rotas</span>
+                    <div id="list-rotas" class="flex flex-wrap justify-center gap-1 mt-3"></div>
                 </div>
-                <div class="relative z-10 flex flex-col items-center w-1/3">
-                    <div class="w-10 h-10 bg-white border-4 border-red-600 rounded-full flex items-center justify-center mb-2 shadow-sm animate-pulse"><i data-lucide="medal" class="w-4 text-red-600"></i></div>
+                <div class="relative z-10 w-1/3">
+                    <div class="w-10 h-10 bg-white border-4 border-red-600 rounded-full flex items-center justify-center mb-2 mx-auto shadow-sm"><i data-lucide="medal" class="w-4 text-red-600"></i></div>
                     <span class="text-[9px] font-bold uppercase text-red-600">Ginásio 1</span>
-                    <div id="list-ginasio" class="flex flex-wrap justify-center gap-1 mt-3 min-h-[40px]"></div>
+                    <div id="list-ginasio" class="flex flex-wrap justify-center gap-1 mt-3"></div>
                 </div>
             </div>
         </section>
 
         <section class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
-            <div class="bg-slate-50 border-b p-4 flex justify-around">
-                <button onclick="changeTab('perfil')" id="tab-perfil" class="text-[10px] font-bold uppercase pb-1 tab-active">1. Perfil</button>
-                <button onclick="changeTab('pokedex')" id="tab-pokedex" class="text-[10px] font-bold uppercase pb-1 text-slate-400">2. Dex/Time</button>
-            </div>
+            <nav class="bg-slate-50 border-b p-4 flex justify-around overflow-x-auto">
+                <button onclick="changeTab('perfil')" id="tab-perfil" class="text-[9px] font-bold uppercase pb-1 tab-active flex-shrink-0 px-2">1. Eu</button>
+                <button onclick="changeTab('pokedex')" id="tab-pokedex" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">2. Time</button>
+                <button onclick="changeTab('mapa')" id="tab-mapa" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">3. Mapa</button>
+                <button onclick="changeTab('times-geral')" id="tab-times-geral" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">4. Ranking</button>
+                <button onclick="changeTab('estatisticas')" id="tab-estatisticas" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">5. Stats</button>
+            </nav>
 
             <div id="content-perfil" class="p-6 space-y-4">
                 <input type="text" id="nome" class="w-full border-2 border-slate-100 p-3 rounded-2xl outline-none font-medium" placeholder="Seu Nome">
@@ -67,87 +79,147 @@
                         <option value="White">Pokémon White</option>
                     </select>
                     <select id="inicial" onchange="renderTeamInputs()" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
-                        <option value="Snivy">Snivy 🍃</option>
-                        <option value="Tepig">Tepig 🔥</option>
-                        <option value="Oshawott">Oshawott 💧</option>
+                        <option value="Snivy">Snivy 🍃</option><option value="Servine">Servine 🌿</option>
+                        <option value="Tepig">Tepig 🔥</option><option value="Pignite">Pignite 🥊</option>
+                        <option value="Oshawott">Oshawott 💧</option><option value="Dewott">Dewott ⚔️</option>
                     </select>
                 </div>
+                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                    <label class="text-[10px] font-black text-blue-900 uppercase tracking-widest block mb-1">Horas de Jogo</label>
+                    <p class="text-[9px] text-blue-600 mb-2 italic">Insira a quantidade de horas que consta no seu último save.</p>
+                    <input type="number" id="horas" step="0.1" class="w-full p-3 rounded-xl border-2 border-blue-200 outline-none font-bold text-blue-700" placeholder="Ex: 5.5">
+                </div>
                 <select id="progresso" class="w-full border-2 border-slate-100 p-4 rounded-2xl bg-slate-900 text-white font-bold">
-                    <option value="nuvema">🏠 Nuvema Town</option>
-                    <option value="rotas">🌿 Rota 1 ou 2</option>
+                    <option value="nuvema">🏠 Nuvema Town (Início)</option>
+                    <option value="rotas">🌿 Explorando Rota 1 ou 2</option>
                     <option value="ginasio">🏅 Venci o 1º Ginásio!</option>
                 </select>
-                <button onclick="changeTab('pokedex')" class="w-full py-2 text-blue-500 text-[10px] font-bold uppercase">Próximo: Atualizar Time ➔</button>
             </div>
 
             <div id="content-pokedex" class="hidden p-6 space-y-6">
-                <div id="pokedex-grid" class="grid grid-cols-2 gap-2"></div>
-                <div class="border-t pt-6">
-                    <h3 class="text-[10px] font-black uppercase text-slate-400 mb-3 tracking-widest">Equipe Atual (Níveis)</h3>
+                <h3 class="text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Capturei ou Evoluí:</h3>
+                <div id="pokedex-grid" class="grid grid-cols-2 gap-2 text-[10px]"></div>
+                <div class="border-t pt-4">
+                    <h3 class="text-[10px] font-black uppercase text-slate-400 mb-3 tracking-widest text-center">Equipe e Níveis</h3>
                     <div id="team-list" class="space-y-2"></div>
                 </div>
-                <button onclick="salvarTudo()" id="btn-final" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition">SALVAR JORNADA</button>
+                <button onclick="salvarTudo()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition">SALVAR MEU PROGRESSO</button>
+            </div>
+
+            <div id="content-mapa" class="hidden p-4">
+                <div class="map-wrapper">
+                    <div class="map-image"><span>Mapa de Unova (Insira o arquivo 'Mapa de unova.png' na mesma pasta)</span></div>
+                    <div id="spot-nuvema" class="map-spot" style="top: 88%; left: 85%;"></div>
+                    <div id="spot-rotas" class="map-spot" style="top: 78%; left: 82%;"></div>
+                    <div id="spot-ginasio" class="map-spot" style="top: 68%; left: 85%;"></div>
+                </div>
+            </div>
+
+            <div id="content-times-geral" class="hidden p-6">
+                <div id="ranking-list" class="space-y-6"></div>
+            </div>
+
+            <div id="content-estatisticas" class="hidden p-6 space-y-8 text-center">
+                <div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 tracking-widest">Pódio de Horas Jogadas</h3>
+                    <div id="horas-ranking" class="space-y-2 max-w-sm mx-auto"></div>
+                </div>
+                <div class="border-t pt-8">
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 tracking-widest">Pokemon no Grupo</h3>
+                    <div class="max-w-[280px] mx-auto"><canvas id="chartPopularidade"></canvas></div>
+                </div>
             </div>
         </section>
     </main>
 
-    <div id="modal-regras" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
-        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl"><h2 class="text-2xl font-black mb-6">REGRAS</h2><div class="text-sm text-slate-600 space-y-3"><p>• Meta: Até o 1º Ginásio (23/02 - 01/03).</p><p>• Sem spoilers!</p></div><button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase">Fechar</button></div>
-    </div>
-
     <div id="modal-gts" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h2 class="text-2xl font-black mb-6 border-b-4 border-blue-500 pb-2 uppercase text-slate-900">GTS DNS</h2>
+            <h2 class="text-2xl font-black mb-6 text-slate-900 border-b-4 border-blue-500 pb-2 uppercase italic">GTS DNS Setup</h2>
             <div class="text-sm text-slate-600 space-y-4">
-                <p class="font-bold">DNS Primário: <code class="bg-blue-50 px-2 py-1 rounded font-bold text-blue-700 text-lg">178.62.43.212</code></p>
+                <div class="gts-step">
+                    <p class="font-bold text-slate-900 text-blue-600 mb-1">1. Configuração de DNS</p>
+                    <p>No seu DS/3DS, vá em **System Settings** > **Nintendo Wi-Fi Connection** > **Connection Settings**.</p>
+                    <p>Selecione sua conexão, vá em **"Auto-obtain DNS"** e marque **NO**.</p>
+                    <p>Em **Primary DNS**, digite exatamente:</p>
+                    <code class="bg-blue-50 px-3 py-2 rounded-lg font-black text-blue-700 text-xl block text-center my-2 border border-blue-100 underline">178.62.43.212</code>
+                </div>
+                <div class="gts-step">
+                    <p class="font-bold text-slate-900 text-blue-600">2. DNS Secundário</p>
+                    <p>Use <code class="bg-slate-100 px-1 rounded">1.1.1.1</code> ou <code class="bg-slate-100 px-1 rounded">8.8.8.8</code>.</p>
+                </div>
                 <div class="bg-amber-50 p-4 border border-amber-200 rounded-2xl">
-                    <p class="text-xs font-bold text-amber-800 uppercase">Dica Celular:</p>
-                    <p class="text-[11px] text-amber-900">Roteie a internet do celular com <strong>segurança Aberta (Sem Senha)</strong> para o DS conseguir conectar.</p>
+                    <p class="font-bold text-amber-900 mb-1 leading-none">⚠️ IMPORTANTE PARA DS LITE/ORIGINAL:</p>
+                    <p class="text-[11px] text-amber-800 leading-relaxed">
+                        O Nintendo DS não suporta segurança WPA2. Você precisará rotear o sinal do seu celular com a <strong>segurança configurada como "Nenhuma" ou "Aberta"</strong> para que o console consiga conectar.
+                    </p>
                 </div>
             </div>
-            <button onclick="toggleModal('modal-gts')" class="mt-8 w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase">Entendido!</button>
+            <button onclick="toggleModal('modal-gts')" class="mt-8 w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition shadow-lg active:scale-95">Concluído!</button>
+        </div>
+    </div>
+
+    <div id="modal-regras" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <h2 class="text-2xl font-black mb-6 text-slate-900 border-b-4 border-red-500 pb-2 uppercase italic">Regras do Clube</h2>
+            <div class="space-y-5 text-sm text-slate-700">
+                <div class="flex gap-4 items-start">
+                    <div class="bg-red-100 text-red-600 w-8 h-8 flex items-center justify-center rounded-full font-black flex-shrink-0">01</div>
+                    <p><strong>Meta da Semana:</strong> Nosso objetivo é vencer o 1º Ginásio (Triad Badge) em Striaton City. O prazo final para atualizar o status é <strong>sexta-feira, 01/03</strong>.</p>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="bg-red-100 text-red-600 w-8 h-8 flex items-center justify-center rounded-full font-black flex-shrink-0">02</div>
+                    <p><strong>Política de Spoilers:</strong> Proibido postar prints ou comentar eventos da história, capturas raras ou ginásios que venham após a primeira insígnia.</p>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="bg-red-100 text-red-600 w-8 h-8 flex items-center justify-center rounded-full font-black flex-shrink-0">03</div>
+                    <p><strong>Plataformas:</strong> Válido apenas para Pokémon Black e Pokémon White (1). O uso de cheats para obter Pokémon impossíveis ou alterar status é proibido.</p>
+                </div>
+            </div>
+            <button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition shadow-lg active:scale-95">Vamos Treinar!</button>
         </div>
     </div>
 
     <script>
+        // CONFIGURAÇÃO DO FIREBASE (SUBSTITUA SE NECESSÁRIO)
         const firebaseConfig = { databaseURL: "https://clube-pokemon-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         lucide.createIcons();
 
-        const pokesDisponiveis = ["Patrat", "Lillipup", "Purrloin", "Pansage", "Pansear", "Panpour", "Munna", "Roggenrola", "Woobat", "Audino"];
+        const pokesDisponiveis = ["Patrat", "Watchog", "Lillipup", "Herdier", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Roggenrola", "Boldore", "Woobat", "Swoobat", "Audino"];
         let capturados = [];
         let teamLevels = {};
+        let myChart = null;
 
-        // 1. CARREGAR DADOS SALVOS NO NAVEGADOR (Local Storage)
         window.onload = () => {
             const salvo = JSON.parse(localStorage.getItem('pkmn_club_data'));
             if (salvo) {
                 document.getElementById('nome').value = salvo.nome || "";
                 document.getElementById('versao').value = salvo.versao || "Black";
                 document.getElementById('inicial').value = salvo.inicial || "Snivy";
-                // Renderiza o time com o inicial salvo
+                document.getElementById('horas').value = salvo.horas || 0;
                 renderTeamInputs();
             }
         };
 
         const dexGrid = document.getElementById('pokedex-grid');
         pokesDisponiveis.forEach(pk => {
-            dexGrid.innerHTML += `<label class="flex items-center gap-2 border p-2 rounded-xl cursor-pointer text-xs"><input type="checkbox" onchange="updateDex(this)" value="${pk}"> ${pk}</label>`;
+            dexGrid.innerHTML += `<label class="flex items-center gap-2 border p-2 rounded-xl bg-white cursor-pointer hover:bg-slate-50 transition"><input type="checkbox" onchange="updateDex(this)" value="${pk}"> ${pk}</label>`;
         });
 
         function changeTab(tab) {
-            document.getElementById('content-perfil').classList.toggle('hidden', tab !== 'perfil');
-            document.getElementById('content-pokedex').classList.toggle('hidden', tab !== 'pokedex');
-            document.getElementById('tab-perfil').classList.toggle('tab-active', tab === 'perfil');
-            document.getElementById('tab-pokedex').classList.toggle('tab-active', tab === 'pokedex');
+            ['perfil', 'pokedex', 'mapa', 'times-geral', 'estatisticas'].forEach(t => {
+                document.getElementById('content-' + t).classList.toggle('hidden', t !== tab);
+                document.getElementById('tab-' + t).classList.toggle('tab-active', t === tab);
+                document.getElementById('tab-' + t).classList.toggle('text-slate-400', t !== tab);
+            });
         }
 
         function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 
         function updateDex(el) {
-            if(el.checked) { capturados.push(el.value); teamLevels[el.value] = 5; } 
-            else { capturados = capturados.filter(p => p !== el.value); delete teamLevels[el.value]; }
+            if(el.checked) { capturados.push(el.value); teamLevels[el.value] = teamLevels[el.value] || 5; } 
+            else { capturados = capturados.filter(p => p !== el.value); }
             renderTeamInputs();
         }
 
@@ -157,62 +229,111 @@
             container.innerHTML = "";
             const minhaLista = [inicialAtual, ...capturados].slice(0, 6);
             minhaLista.forEach(pk => {
-                if(!teamLevels[pk]) teamLevels[pk] = 5;
+                const lv = teamLevels[pk] || 5;
                 container.innerHTML += `
-                    <div class="flex items-center justify-between bg-slate-50 p-2 rounded-xl border">
+                    <div class="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200">
                         <span class="text-xs font-bold text-slate-700">${pk}</span>
-                        <input type="number" value="${teamLevels[pk]}" onchange="teamLevels['${pk}'] = this.value" class="w-12 border text-center text-xs font-bold">
+                        <input type="number" value="${lv}" onchange="teamLevels['${pk}'] = this.value" class="w-14 border-2 border-slate-200 text-center text-xs font-bold p-1 rounded-lg">
                     </div>`;
             });
         }
 
         function salvarTudo() {
             const nome = document.getElementById('nome').value.trim();
-            if(!nome) return alert("Digite seu nome!");
+            const horas = parseFloat(document.getElementById('horas').value) || 0;
+            if(!nome) return alert("Por favor, digite seu nome de treinador!");
+            
             const inicial = document.getElementById('inicial').value;
             const versao = document.getElementById('versao').value;
-            
-            // 2. SALVAR NO NAVEGADOR PARA A PRÓXIMA VEZ
-            localStorage.setItem('pkmn_club_data', JSON.stringify({ nome, versao, inicial }));
+            localStorage.setItem('pkmn_club_data', JSON.stringify({ nome, versao, inicial, horas }));
 
-            const finalTeam = [inicial, ...capturados].slice(0, 6).map(pk => ({
-                species: pk,
-                level: teamLevels[pk] || 5
+            const finalTeam = [inicial, ...capturados].slice(0, 6).map(pk => ({ 
+                species: pk, 
+                level: parseInt(teamLevels[pk] || 5) 
             }));
 
             db.ref('jogadores/' + nome).set({
-                nome, versao,
-                inicial: inicial,
+                nome, versao, inicial, horas,
                 progresso: document.getElementById('progresso').value,
-                capturados, team: finalTeam,
+                team: finalTeam,
                 updateAt: Date.now()
-            }).then(() => { 
-                alert("Jornada Sincronizada!"); 
-                changeTab('perfil'); 
-            });
+            }).then(() => { alert("Jornada Sincronizada com Sucesso!"); });
         }
 
         db.ref('jogadores').on('value', (snap) => {
-            ['list-nuvema', 'list-rotas', 'list-ginasio'].forEach(id => document.getElementById(id).innerHTML = "");
-            const data = snap.val();
-            if(data) {
-                Object.values(data).forEach(p => {
-                    const color = p.versao === 'Black' ? 'bg-slate-900 text-white' : 'bg-white border text-slate-900';
-                    document.getElementById('list-' + p.progresso).innerHTML += `
-                        <div class="group relative">
-                            <div class="w-8 h-8 rounded-full ${color} text-[9px] flex items-center justify-center font-black border-2 border-white shadow-sm cursor-pointer">${p.nome.substring(0,2).toUpperCase()}</div>
-                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 scale-0 group-hover:scale-100 transition-all z-50">
-                                <div class="bg-slate-900 text-white text-[10px] p-2 rounded-xl shadow-2xl min-w-[100px]">
-                                    <p class="font-bold border-b border-slate-700 mb-1 text-red-500">${p.nome}</p>
-                                    <p>Time: ${p.team ? p.team.map(t => t.species).join(', ') : ''}</p>
-                                </div>
+            const data = snap.val(); if(!data) return;
+            const jogadores = Object.values(data);
+            
+            ['list-nuvema', 'list-rotas', 'list-ginasio', 'spot-nuvema', 'spot-rotas', 'spot-ginasio'].forEach(id => document.getElementById(id).innerHTML = "");
+            const rankList = document.getElementById('ranking-list');
+            const horasRank = document.getElementById('horas-ranking');
+            rankList.innerHTML = ""; horasRank.innerHTML = "";
+            
+            // Ordenação Ranking (Local > Média de Level)
+            const pesoProgresso = { 'ginasio': 3, 'rotas': 2, 'nuvema': 1 };
+            jogadores.sort((a, b) => {
+                if (pesoProgresso[b.progresso] !== pesoProgresso[a.progresso]) return pesoProgresso[b.progresso] - pesoProgresso[a.progresso];
+                const m = p => p.team ? p.team.reduce((s, pk) => s + pk.level, 0) / p.team.length : 0;
+                return m(b) - m(a);
+            });
+
+            const contagemPokes = {};
+            jogadores.forEach(p => {
+                const color = p.versao === 'Black' ? 'bg-slate-900 text-white' : 'bg-white border text-blue-500 border-blue-200';
+                const avatar = `<div class="w-7 h-7 rounded-full ${color} text-[8px] flex items-center justify-center font-black border-2 border-white shadow-sm ring-1 ring-slate-100">${p.nome.substring(0,2).toUpperCase()}</div>`;
+                
+                document.getElementById('list-' + p.progresso).innerHTML += avatar;
+                document.getElementById('spot-' + p.progresso).innerHTML += avatar;
+
+                const media = p.team ? (p.team.reduce((s, pk) => s + pk.level, 0) / p.team.length).toFixed(1) : 0;
+                rankList.innerHTML += `
+                    <div class="bg-white border-2 border-slate-100 rounded-2xl p-4 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-black text-sm uppercase tracking-tight ${p.versao === 'Black' ? 'text-slate-900' : 'text-blue-500'}">${p.nome}</span>
+                            <div class="text-right">
+                                <p class="text-[8px] text-slate-400 font-bold uppercase">Média Lvl</p>
+                                <p class="text-xs font-black text-red-500">${media}</p>
                             </div>
-                        </div>`;
-                });
-            }
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            ${p.team?.map(pk => `<div class="flex justify-between text-[10px] bg-slate-50 p-2 rounded-lg border border-slate-100"><span>${pk.species}</span><span class="font-bold">Lv.${pk.level}</span></div>`).join('')}
+                        </div>
+                        <p class="text-[9px] text-slate-400 mt-3 text-center font-medium italic tracking-wider">⏱️ Tempo Total: ${p.horas || 0}h</p>
+                    </div>`;
+                p.team?.forEach(pk => { contagemPokes[pk.species] = (contagemPokes[pk.species] || 0) + 1; });
+            });
+
+            // Ranking Horas
+            [...jogadores].sort((a,b) => (b.horas || 0) - (a.horas || 0)).forEach((p, idx) => {
+                horasRank.innerHTML += `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border-2 border-slate-50 shadow-sm">
+                    <span class="text-xs font-bold text-slate-600">${idx+1}º ${p.nome}</span>
+                    <span class="font-black text-blue-600">${p.horas || 0}h</span>
+                </div>`;
+            });
+            renderChart(contagemPokes);
         });
 
-        renderTeamInputs();
+        function renderChart(contagem) {
+            const ctx = document.getElementById('chartPopularidade').getContext('2d');
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctx, { 
+                type: 'doughnut', 
+                data: { 
+                    labels: Object.keys(contagem), 
+                    datasets: [{ 
+                        data: Object.values(contagem), 
+                        backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b', '#0ea5e9'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }] 
+                }, 
+                options: { 
+                    cutout: '60%',
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9, weight: 'bold' } } } } 
+                } 
+            });
+        }
     </script>
 </body>
 </html>

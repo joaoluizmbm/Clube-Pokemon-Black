@@ -11,6 +11,7 @@
     <style>
         .bg-unova { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; }
         .tab-active { border-bottom: 3px solid #ef4444; color: #ef4444; }
+        .avatar-slot { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-unova min-h-screen font-sans text-slate-900 pb-10">
@@ -68,44 +69,37 @@
             </div>
 
             <div id="content-perfil" class="p-6 space-y-4">
-                <div class="grid grid-cols-1 gap-4">
-                    <input type="text" id="nome" class="w-full border-2 border-slate-100 p-3 rounded-2xl focus:border-red-500 outline-none transition font-medium" placeholder="O seu Nome">
-                    <div class="grid grid-cols-2 gap-3">
-                        <select id="versao" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
-                            <option value="Black">Pokémon Black</option>
-                            <option value="White">Pokémon White</option>
-                        </select>
-                        <select id="inicial" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
-                            <option value="Snivy">Snivy 🍃</option>
-                            <option value="Tepig">Tepig 🔥</option>
-                            <option value="Oshawott">Oshawott 💧</option>
-                        </select>
-                    </div>
-                    <select id="progresso" class="w-full border-2 border-slate-100 p-4 rounded-2xl bg-slate-900 text-white font-bold">
-                        <option value="nuvema">🏠 Nuvema Town (Início)</option>
-                        <option value="rotas">🌿 Rota 1 ou 2</option>
-                        <option value="ginasio">🏅 Venci o 1º Ginásio!</option>
+                <input type="text" id="nome" class="w-full border-2 border-slate-100 p-3 rounded-2xl outline-none transition font-medium" placeholder="Seu Nome">
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="versao" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
+                        <option value="Black">Pokémon Black</option>
+                        <option value="White">Pokémon White</option>
+                    </select>
+                    <select id="inicial" onchange="renderTeamInputs()" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
+                        <option value="Snivy">Snivy 🍃</option>
+                        <option value="Tepig">Tepig 🔥</option>
+                        <option value="Oshawott">Oshawott 💧</option>
                     </select>
                 </div>
-                <button onclick="changeTab('pokedex')" class="w-full py-3 text-slate-400 text-xs font-bold uppercase">Próximo Passo: Pokédex ➔</button>
+                <select id="progresso" class="w-full border-2 border-slate-100 p-4 rounded-2xl bg-slate-900 text-white font-bold">
+                    <option value="nuvema">🏠 Nuvema Town (Início)</option>
+                    <option value="rotas">🌿 Rota 1 ou 2</option>
+                    <option value="ginasio">🏅 Venci o 1º Ginásio!</option>
+                </select>
+                <button onclick="changeTab('pokedex')" class="w-full py-2 text-blue-500 text-xs font-bold uppercase tracking-widest">Próximo Passo: Montar Time ➔</button>
             </div>
 
             <div id="content-pokedex" class="hidden p-6 space-y-6">
                 <div>
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Pokédex (Capturados)</h3>
-                    <div id="pokedex-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        </div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Capturados (Dex)</h3>
+                    <div id="pokedex-grid" class="grid grid-cols-2 gap-2"></div>
                 </div>
-
                 <div class="border-t pt-6">
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">A Minha Equipa (Max 6)</h3>
-                    <div id="team-list" class="space-y-2">
-                        <p class="text-[10px] text-slate-400 italic">Selecione pokémons na Pokédex acima para adicionar à equipa.</p>
-                    </div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Time Atual (Níveis)</h3>
+                    <div id="team-list" class="space-y-2 text-xs text-slate-400 italic">Marque na Dex para adicionar ao time.</div>
                 </div>
-
-                <button onclick="salvarTudo()" id="btn-final" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg hover:bg-red-700 transition active:scale-95">
-                    SALVAR JORNADA NO GRUPO
+                <button onclick="salvarTudo()" id="btn-final" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition">
+                    SALVAR JORNADA
                 </button>
             </div>
         </section>
@@ -113,20 +107,21 @@
 
     <div id="modal-regras" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl relative">
-            <h2 class="text-2xl font-black mb-6 text-slate-900 leading-tight">INSTRUÇÕES DO CLUBE</h2>
+            <h2 class="text-2xl font-black mb-6 text-slate-900">REGRAS DO GRUPO</h2>
             <div class="space-y-4 text-sm text-slate-600">
-                <p class="flex gap-3"><i data-lucide="calendar" class="text-red-500 w-8"></i> <strong>Prazo:</strong> 23/02 a 01/03 (Até ao 1º Ginásio).</p>
-                <p class="flex gap-3"><i data-lucide="eye-off" class="text-red-500 w-8"></i> <strong>Spoilers:</strong> Proibido antecipar eventos futuros!</p>
-                <p class="flex gap-3"><i data-lucide="refresh-cw" class="text-red-500 w-8"></i> <strong>Trocas:</strong> Apenas via GTS entre o grupo e com pokémon da área.</p>
-                <p class="flex gap-3"><i data-lucide="zap-off" class="text-red-500 w-8"></i> <strong>Mods:</strong> Apenas versões originais (Black/White).</p>
+                <p>• <strong>Meta:</strong> Até o 1º Ginásio (23/02 - 01/03).</p>
+                <p>• <strong>Spoiler:</strong> Proibido comentar eventos futuros.</p>
+                <p>• <strong>Trocas:</strong> Apenas entre o grupo e via GTS.</p>
             </div>
             <button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black tracking-widest uppercase">Entendido!</button>
         </div>
     </div>
 
     <script>
-        // CONFIGURAÇÃO FIREBASE
-        const firebaseConfig = { databaseURL: "https://clube-pokemon-default-rtdb.firebaseio.com/" };
+        // CONFIGURAÇÃO DO SEU FIREBASE
+        const firebaseConfig = {
+            databaseURL: "https://clube-pokemon-default-rtdb.firebaseio.com/" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -134,16 +129,15 @@
 
         const pokesDisponiveis = ["Patrat", "Lillipup", "Purrloin", "Pansage", "Pansear", "Panpour", "Munna", "Roggenrola", "Woobat", "Audino"];
         let capturados = [];
-        let team = [];
+        let teamData = {};
 
-        // Iniciar Pokédex
+        // Inicializar Dex
         const dexGrid = document.getElementById('pokedex-grid');
         pokesDisponiveis.forEach(pk => {
             dexGrid.innerHTML += `
-                <label class="flex items-center gap-2 border p-2 rounded-xl cursor-pointer hover:bg-slate-50 transition text-xs font-medium">
-                    <input type="checkbox" onchange="updateDex(this)" value="${pk}" class="w-4 h-4 rounded border-slate-300"> ${pk}
-                </label>
-            `;
+                <label class="flex items-center gap-2 border p-2 rounded-xl cursor-pointer hover:bg-slate-50 text-xs font-medium">
+                    <input type="checkbox" onchange="updateDex(this)" value="${pk}"> ${pk}
+                </label>`;
         });
 
         function changeTab(tab) {
@@ -153,73 +147,72 @@
             document.getElementById('tab-pokedex').classList.toggle('tab-active', tab === 'pokedex');
         }
 
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+
         function updateDex(el) {
-            if(el.checked) capturados.push(el.value);
-            else {
+            if(el.checked) {
+                capturados.push(el.value);
+                teamData[el.value] = 1;
+            } else {
                 capturados = capturados.filter(p => p !== el.value);
-                team = team.filter(t => t.species !== el.value);
+                delete teamData[el.value];
             }
             renderTeamInputs();
         }
 
         function renderTeamInputs() {
             const container = document.getElementById('team-list');
+            const inicial = document.getElementById('inicial').value;
             container.innerHTML = "";
             
-            // Adicionar Inicial sempre
-            const inicial = document.getElementById('inicial').value;
-            if(!team.find(t => t.species === inicial)) team.push({species: inicial, level: 5});
-
-            capturados.forEach(pk => {
-                if(!team.find(t => t.species === pk)) team.push({species: pk, level: 1});
-            });
-
-            team.slice(0, 6).forEach((member, index) => {
+            const list = [inicial, ...capturados].slice(0, 6);
+            list.forEach(pk => {
+                if(!teamData[pk]) teamData[pk] = 5;
                 container.innerHTML += `
-                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100">
-                        <span class="text-xs font-bold">${member.species}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[9px] uppercase font-bold text-slate-400">Lv.</span>
-                            <input type="number" value="${member.level}" onchange="team[${index}].level = this.value" class="w-12 p-1 rounded border text-center text-xs">
-                        </div>
-                    </div>
-                `;
+                    <div class="flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-700">${pk}</span>
+                        <input type="number" value="${teamData[pk]}" onchange="teamData['${pk}'] = this.value" class="w-12 p-1 rounded border text-center text-xs text-slate-900 font-bold">
+                    </div>`;
             });
         }
 
-        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
-
         function salvarTudo() {
             const nome = document.getElementById('nome').value.trim();
-            if(!nome) return alert("Escreva o seu nome!");
-
-            const btn = document.getElementById('btn-final');
-            btn.innerText = "A GUARDAR...";
+            if(!nome) return alert("Digite seu nome!");
             
+            const btn = document.getElementById('btn-final');
+            btn.innerText = "SALVANDO...";
+            btn.disabled = true;
+
+            const finalTeam = Object.entries(teamData).map(([species, level]) => ({species, level}));
+
             db.ref('jogadores/' + nome).set({
                 nome,
                 versao: document.getElementById('versao').value,
                 inicial: document.getElementById('inicial').value,
                 progresso: document.getElementById('progresso').value,
                 capturados,
-                team: team.slice(0, 6),
+                team: finalTeam,
                 updateAt: Date.now()
             }).then(() => {
-                btn.innerText = "SALVAR JORNADA NO GRUPO";
-                alert("Dados sincronizados com o grupo!");
+                btn.innerText = "SALVAR JORNADA";
+                btn.disabled = false;
+                alert("Sucesso! O grupo já pode ver seu progresso.");
                 changeTab('perfil');
+            }).catch(e => {
+                alert("Erro: Verifique as Regras de Segurança no Firebase.");
+                btn.innerText = "TENTAR NOVAMENTE";
+                btn.disabled = false;
             });
         }
 
-        // LER DADOS DO GRUPO
+        // Listener Real-time
         db.ref('jogadores').on('value', (snap) => {
-            const listIds = ['list-nuvema', 'list-rotas', 'list-ginasio'];
-            listIds.forEach(id => document.getElementById(id).innerHTML = "");
-
+            ['list-nuvema', 'list-rotas', 'list-ginasio'].forEach(id => document.getElementById(id).innerHTML = "");
             const data = snap.val();
             if(data) {
                 Object.values(data).forEach(p => {
-                    const color = p.versao === 'Black' ? 'bg-slate-900' : 'bg-white border-2 border-slate-200 text-slate-900';
+                    const color = p.versao === 'Black' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-900';
                     const html = `
                         <div class="group relative">
                             <div class="w-8 h-8 rounded-full ${color} text-[9px] flex items-center justify-center font-black shadow-sm cursor-pointer">
@@ -227,17 +220,19 @@
                             </div>
                             <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 scale-0 group-hover:scale-100 transition-all z-50">
                                 <div class="bg-slate-900 text-white text-[10px] p-3 rounded-xl shadow-2xl min-w-[120px]">
-                                    <p class="font-bold border-b border-slate-700 pb-1 mb-1 text-red-500">${p.nome}</p>
-                                    <p>Dex: ${p.capturados ? p.capturados.length : 0} pokes</p>
+                                    <p class="font-bold border-b border-slate-700 pb-1 mb-1 text-red-500">${p.nome} (${p.versao})</p>
+                                    <p>Capturados: ${p.capturados ? p.capturados.length : 0}</p>
                                     <p class="mt-1 text-slate-400">Time: ${p.team ? p.team.map(t => t.species).join(', ') : ''}</p>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                     document.getElementById('list-' + p.progresso).innerHTML += html;
                 });
             }
         });
+
+        // Inicializar time com o inicial padrão
+        renderTeamInputs();
     </script>
 </body>
 </html>

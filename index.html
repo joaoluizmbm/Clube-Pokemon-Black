@@ -92,17 +92,17 @@
     </main>
 
     <div id="modal-regras" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
-        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl"><h2 class="text-2xl font-black mb-6">REGRAS</h2><div class="text-sm text-slate-600 space-y-3"><p>• Meta: Até o 1º Ginásio.</p><p>• Sem spoilers!</p></div><button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase">Fechar</button></div>
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl"><h2 class="text-2xl font-black mb-6">REGRAS</h2><div class="text-sm text-slate-600 space-y-3"><p>• Meta: Até o 1º Ginásio (23/02 - 01/03).</p><p>• Sem spoilers!</p></div><button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase">Fechar</button></div>
     </div>
 
     <div id="modal-gts" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h2 class="text-2xl font-black mb-6 border-b-4 border-blue-500 pb-2 uppercase">GTS DNS</h2>
+            <h2 class="text-2xl font-black mb-6 border-b-4 border-blue-500 pb-2 uppercase text-slate-900">GTS DNS</h2>
             <div class="text-sm text-slate-600 space-y-4">
-                <p>DNS Primário: <code class="bg-blue-50 px-2 py-1 rounded font-bold text-blue-700 text-lg">178.62.43.212</code></p>
+                <p class="font-bold">DNS Primário: <code class="bg-blue-50 px-2 py-1 rounded font-bold text-blue-700 text-lg">178.62.43.212</code></p>
                 <div class="bg-amber-50 p-4 border border-amber-200 rounded-2xl">
-                    <p class="text-xs font-bold text-amber-800">DICA DS ORIGINAL:</p>
-                    <p class="text-[11px] text-amber-900">Roteie a internet do celular com <strong>segurança Aberta/Sem Senha</strong> para o DS conseguir conectar.</p>
+                    <p class="text-xs font-bold text-amber-800 uppercase">Dica Celular:</p>
+                    <p class="text-[11px] text-amber-900">Roteie a internet do celular com <strong>segurança Aberta (Sem Senha)</strong> para o DS conseguir conectar.</p>
                 </div>
             </div>
             <button onclick="toggleModal('modal-gts')" class="mt-8 w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase">Entendido!</button>
@@ -118,6 +118,18 @@
         const pokesDisponiveis = ["Patrat", "Lillipup", "Purrloin", "Pansage", "Pansear", "Panpour", "Munna", "Roggenrola", "Woobat", "Audino"];
         let capturados = [];
         let teamLevels = {};
+
+        // 1. CARREGAR DADOS SALVOS NO NAVEGADOR (Local Storage)
+        window.onload = () => {
+            const salvo = JSON.parse(localStorage.getItem('pkmn_club_data'));
+            if (salvo) {
+                document.getElementById('nome').value = salvo.nome || "";
+                document.getElementById('versao').value = salvo.versao || "Black";
+                document.getElementById('inicial').value = salvo.inicial || "Snivy";
+                // Renderiza o time com o inicial salvo
+                renderTeamInputs();
+            }
+        };
 
         const dexGrid = document.getElementById('pokedex-grid');
         pokesDisponiveis.forEach(pk => {
@@ -139,15 +151,11 @@
             renderTeamInputs();
         }
 
-        // FUNÇÃO CORRIGIDA: Agora ela limpa o time e reconstrói com base no inicial atual + capturados
         function renderTeamInputs() {
             const container = document.getElementById('team-list');
             const inicialAtual = document.getElementById('inicial').value;
             container.innerHTML = "";
-            
-            // Cria a lista começando pelo inicial escolhido + os que foram marcados na dex
             const minhaLista = [inicialAtual, ...capturados].slice(0, 6);
-            
             minhaLista.forEach(pk => {
                 if(!teamLevels[pk]) teamLevels[pk] = 5;
                 container.innerHTML += `
@@ -162,20 +170,26 @@
             const nome = document.getElementById('nome').value.trim();
             if(!nome) return alert("Digite seu nome!");
             const inicial = document.getElementById('inicial').value;
+            const versao = document.getElementById('versao').value;
             
-            // Garante que o time salvo contenha o inicial e os níveis corretos
+            // 2. SALVAR NO NAVEGADOR PARA A PRÓXIMA VEZ
+            localStorage.setItem('pkmn_club_data', JSON.stringify({ nome, versao, inicial }));
+
             const finalTeam = [inicial, ...capturados].slice(0, 6).map(pk => ({
                 species: pk,
                 level: teamLevels[pk] || 5
             }));
 
             db.ref('jogadores/' + nome).set({
-                nome, versao: document.getElementById('versao').value,
+                nome, versao,
                 inicial: inicial,
                 progresso: document.getElementById('progresso').value,
                 capturados, team: finalTeam,
                 updateAt: Date.now()
-            }).then(() => { alert("Sincronizado!"); changeTab('perfil'); });
+            }).then(() => { 
+                alert("Jornada Sincronizada!"); 
+                changeTab('perfil'); 
+            });
         }
 
         db.ref('jogadores').on('value', (snap) => {
@@ -189,7 +203,7 @@
                             <div class="w-8 h-8 rounded-full ${color} text-[9px] flex items-center justify-center font-black border-2 border-white shadow-sm cursor-pointer">${p.nome.substring(0,2).toUpperCase()}</div>
                             <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 scale-0 group-hover:scale-100 transition-all z-50">
                                 <div class="bg-slate-900 text-white text-[10px] p-2 rounded-xl shadow-2xl min-w-[100px]">
-                                    <p class="font-bold border-b border-slate-700 mb-1">${p.nome}</p>
+                                    <p class="font-bold border-b border-slate-700 mb-1 text-red-500">${p.nome}</p>
                                     <p>Time: ${p.team ? p.team.map(t => t.species).join(', ') : ''}</p>
                                 </div>
                             </div>
@@ -198,7 +212,7 @@
             }
         });
 
-        renderTeamInputs(); // Inicia com o inicial padrão (Snivy) mas mudará assim que você selecionar outro
+        renderTeamInputs();
     </script>
 </body>
 </html>

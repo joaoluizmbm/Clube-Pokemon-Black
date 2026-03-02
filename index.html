@@ -14,15 +14,15 @@
         .bg-unova { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; }
         .tab-active { border-bottom: 3px solid #ef4444; color: #ef4444; font-weight: 900; }
         .map-wrapper { position: relative; width: 100%; max-width: 600px; margin: 0 auto; background-color: #e2e8f0; border-radius: 1.5rem; overflow: hidden; border: 4px solid #1e293b; }
-        .map-image { width: 100%; display: block; content: url('mapaunova.png'); background: #cbd5e1; height: 300px; display: flex; align-items: center; justify-content: center; } /* Placeholder para o seu arquivo local 'Mapa de unova.png' */
+        .map-image { width: 100%; display: block; content: url('mapaunova.png'); background: #cbd5e1; height: 300px; display: flex; align-items: center; justify-content: center; } 
         .map-spot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-wrap: wrap; gap: 2px; max-width: 80px; justify-content: center; z-index: 20; }
-        .gts-step { border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem; }
+        .gts-step { border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem; }
     </style>
 </head>
 <body class="bg-unova min-h-screen font-sans text-slate-900 pb-10">
 
     <header class="bg-slate-900 text-white p-4 shadow-xl sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="container mx-auto flex justify-between items-center text-center">
             <h1 class="text-xl font-black tracking-tighter flex items-center gap-2">
                 <i data-lucide="shield-check" class="text-red-500"></i> POKÉCLUB
             </h1>
@@ -35,26 +35,41 @@
 
     <main class="container mx-auto p-4 max-w-2xl">
         
-        <section class="mb-6 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+        <section class="mb-6 bg-white p-6 rounded-3xl shadow-sm border border-slate-200 overflow-x-auto">
             <h2 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
-                <i data-lucide="map" class="w-3"></i> Status do Grupo
+                <i data-lucide="map" class="w-3"></i> Jornada Unova
             </h2>
-            <div class="relative flex justify-between px-2 text-center">
-                <div class="absolute top-5 left-0 w-full h-1 bg-slate-100 z-0"></div>
-                <div class="relative z-10 w-1/3">
-                    <div class="w-10 h-10 bg-white border-4 border-slate-900 rounded-full flex items-center justify-center mb-2 mx-auto shadow-sm"><i data-lucide="home" class="w-4"></i></div>
-                    <span class="text-[9px] font-bold uppercase text-slate-500">Nuvema</span>
-                    <div id="list-nuvema" class="flex flex-wrap justify-center gap-1 mt-3"></div>
+            <div class="relative flex justify-between px-2 text-center min-w-[500px]">
+                <div class="absolute top-4 left-0 w-full h-1 bg-slate-100 z-0"></div>
+                <div class="relative z-10 w-1/6">
+                    <div class="w-8 h-8 bg-white border-2 border-slate-900 rounded-full flex items-center justify-center mb-1 mx-auto shadow-sm"><i data-lucide="home" class="w-3"></i></div>
+                    <span class="text-[7px] font-bold uppercase text-slate-400">Nuvema</span>
+                    <div id="list-nuvema" class="flex flex-wrap justify-center gap-1 mt-2"></div>
                 </div>
-                <div class="relative z-10 w-1/3">
-                    <div class="w-10 h-10 bg-white border-4 border-slate-400 rounded-full flex items-center justify-center mb-2 mx-auto shadow-sm"><i data-lucide="trees" class="w-4"></i></div>
-                    <span class="text-[9px] font-bold uppercase text-slate-500">Rotas</span>
-                    <div id="list-rotas" class="flex flex-wrap justify-center gap-1 mt-3"></div>
+                <div class="relative z-10 w-1/6">
+                    <div class="w-8 h-8 bg-white border-2 border-red-500 rounded-full flex items-center justify-center mb-1 mx-auto shadow-sm"><i data-lucide="medal" class="w-3 text-red-500"></i></div>
+                    <span class="text-[7px] font-bold uppercase text-red-500">Striaton</span>
+                    <div id="list-ginasio" class="flex flex-wrap justify-center gap-1 mt-2"></div>
                 </div>
-                <div class="relative z-10 w-1/3">
-                    <div class="w-10 h-10 bg-white border-4 border-red-600 rounded-full flex items-center justify-center mb-2 mx-auto shadow-sm"><i data-lucide="medal" class="w-4 text-red-600"></i></div>
-                    <span class="text-[9px] font-bold uppercase text-red-600">Ginásio 1</span>
-                    <div id="list-ginasio" class="flex flex-wrap justify-center gap-1 mt-3"></div>
+                <div class="relative z-10 w-1/6">
+                    <div class="w-8 h-8 bg-white border-2 border-blue-400 rounded-full flex items-center justify-center mb-1 mx-auto shadow-sm"><i data-lucide="map-pin" class="w-3 text-blue-400"></i></div>
+                    <span class="text-[7px] font-bold uppercase text-slate-400">Rota 3</span>
+                    <div id="list-rota3" class="flex flex-wrap justify-center gap-1 mt-2"></div>
+                </div>
+                <div class="relative z-10 w-1/6">
+                    <div class="w-8 h-8 bg-white border-2 border-orange-500 rounded-full flex items-center justify-center mb-1 mx-auto shadow-sm"><i data-lucide="building-2" class="w-3 text-orange-500"></i></div>
+                    <span class="text-[7px] font-bold uppercase text-slate-400">Nacrene</span>
+                    <div id="list-nacrene" class="flex flex-wrap justify-center gap-1 mt-2"></div>
+                </div>
+                <div class="relative z-10 w-1/6">
+                    <div class="w-8 h-8 bg-white border-2 border-orange-700 rounded-full flex items-center justify-center mb-1 mx-auto shadow-sm"><i data-lucide="medal" class="w-3 text-orange-700"></i></div>
+                    <span class="text-[7px] font-bold uppercase text-orange-700">Gym 2</span>
+                    <div id="list-ginasio2" class="flex flex-wrap justify-center gap-1 mt-2"></div>
+                </div>
+                <div class="relative z-10 w-1/6">
+                    <div class="w-8 h-8 bg-white border-2 border-emerald-500 rounded-full flex items-center justify-center mb-1 mx-auto shadow-sm"><i data-lucide="trees" class="w-3 text-emerald-500"></i></div>
+                    <span class="text-[7px] font-bold uppercase text-slate-400">Pinwheel</span>
+                    <div id="list-pinwheel" class="flex flex-wrap justify-center gap-1 mt-2"></div>
                 </div>
             </div>
         </section>
@@ -62,10 +77,11 @@
         <section class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
             <nav class="bg-slate-50 border-b p-4 flex justify-around overflow-x-auto">
                 <button onclick="changeTab('perfil')" id="tab-perfil" class="text-[9px] font-bold uppercase pb-1 tab-active flex-shrink-0 px-2">1. Eu</button>
-                <button onclick="changeTab('pokedex')" id="tab-pokedex" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">2. Time</button>
-                <button onclick="changeTab('mapa')" id="tab-mapa" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">3. Mapa</button>
-                <button onclick="changeTab('times-geral')" id="tab-times-geral" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">4. Ranking</button>
-                <button onclick="changeTab('estatisticas')" id="tab-estatisticas" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">5. Stats</button>
+                <button onclick="changeTab('time')" id="tab-time" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">2. Time</button>
+                <button onclick="changeTab('pokedex')" id="tab-pokedex" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">3. Pokédex</button>
+                <button onclick="changeTab('mapa')" id="tab-mapa" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">4. Mapa</button>
+                <button onclick="changeTab('times-geral')" id="tab-times-geral" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">5. Ranking</button>
+                <button onclick="changeTab('estatisticas')" id="tab-estatisticas" class="text-[9px] font-bold uppercase pb-1 text-slate-400 flex-shrink-0 px-2">6. Stats</button>
             </nav>
 
             <div id="content-perfil" class="p-6 space-y-4">
@@ -75,54 +91,70 @@
                         <option value="Black">Pokémon Black</option>
                         <option value="White">Pokémon White</option>
                     </select>
-                    <select id="inicial" onchange="renderTeamInputs()" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
-                        <option value="Snivy">Snivy 🍃</option><option value="Servine">Servine 🌿</option>
-                        <option value="Tepig">Tepig 🔥</option><option value="Pignite">Pignite 🥊</option>
-                        <option value="Oshawott">Oshawott 💧</option><option value="Dewott">Dewott ⚔️</option>
+                    <select id="inicial" class="w-full border-2 border-slate-100 p-3 rounded-2xl bg-white text-sm">
+                        <option value="Snivy">Snivy 🍃</option><option value="Tepig">Tepig 🔥</option><option value="Oshawott">Oshawott 💧</option>
+                    </select>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <label class="text-[9px] font-black uppercase text-slate-400 ml-1">Dispositivo</label>
+                    <select id="dispositivo" class="w-full border-2 border-white p-3 rounded-xl bg-white text-sm outline-none">
+                        <option value="Nintendo DS">Nintendo DS</option>
+                        <option value="Nintendo 3DS">Nintendo 3DS</option>
+                        <option value="Emulador PC">Emulador PC</option>
+                        <option value="Emulador Android">Emulador Android</option>
+                        <option value="Outro">Outro</option>
                     </select>
                 </div>
                 <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
                     <label class="text-[10px] font-black text-blue-900 uppercase tracking-widest block mb-2">Horas de Jogo</label>
-                    <p class="text-[9px] text-blue-600 mb-2">Insira a quantidade de horas que consta no seu último save.</p>
                     <input type="number" id="horas" step="0.1" class="w-full p-3 rounded-xl border-2 border-blue-200 outline-none font-bold text-blue-700" placeholder="Ex: 5.5">
                 </div>
                 <select id="progresso" class="w-full border-2 border-slate-100 p-4 rounded-2xl bg-slate-900 text-white font-bold">
                     <option value="nuvema">🏠 Nuvema Town (Início)</option>
-                    <option value="rotas">🌿 Explorando Rota 1 ou 2</option>
-                    <option value="ginasio">🏅 Venci o 1º Ginásio!</option>
+                    <option value="ginasio">🏅 Striaton City (Ginásio 1)</option>
+                    <option value="rota3">🛣️ Rota 3 / Wellspring Cave</option>
+                    <option value="nacrene">🏛️ Nacrene City (Cheguei!)</option>
+                    <option value="ginasio2">🏅 Nacrene Gym (Venci!)</option>
+                    <option value="pinwheel">🌿 Pinwheel Forest (Externa)</option>
                 </select>
+            </div>
+
+            <div id="content-time" class="hidden p-6 space-y-4">
+                <div id="team-slots" class="space-y-3"></div>
+                <button onclick="salvarTudo()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition">SALVAR PROGRESSO</button>
             </div>
 
             <div id="content-pokedex" class="hidden p-6 space-y-6">
                 <div id="pokedex-grid" class="grid grid-cols-2 gap-2 text-[10px]"></div>
-                <div class="border-t pt-4 text-center">
-                    <h3 class="text-[10px] font-black uppercase text-slate-400 mb-3 tracking-widest">Equipe Atual (Níveis)</h3>
-                    <div id="team-list" class="space-y-2"></div>
-                </div>
-                <button onclick="salvarTudo()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition">SALVAR PROGRESSO</button>
+                <button onclick="salvarTudo()" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition">SALVAR CAPTURAS</button>
             </div>
 
             <div id="content-mapa" class="hidden p-4">
                 <div class="map-wrapper">
                     <div class="map-image"></div>
                     <div id="spot-nuvema" class="map-spot" style="top: 96%; left: 92%;"></div>
-                    <div id="spot-rotas" class="map-spot" style="top: 84%; left: 92%;"></div>
                     <div id="spot-ginasio" class="map-spot" style="top: 70%; left: 91%;"></div>
+                    <div id="spot-rota3" class="map-spot" style="top: 70%; left: 88%;"></div>
+                    <div id="spot-nacrene" class="map-spot" style="top: 69%; left: 80%;"></div>
+                    <div id="spot-ginasio2" class="map-spot" style="top: 69%; left: 80%;"></div>
+                    <div id="spot-pinwheel" class="map-spot" style="top: 75%; left: 75%;"></div>
                 </div>
             </div>
 
-            <div id="content-times-geral" class="hidden p-6">
-                <div id="ranking-list" class="space-y-6"></div>
-            </div>
+            <div id="content-times-geral" class="hidden p-6 space-y-6"></div>
 
             <div id="content-estatisticas" class="hidden p-6 space-y-8">
                 <div>
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 text-center tracking-widest">Tempo de Jogo</h3>
-                    <div id="horas-ranking" class="space-y-2"></div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 text-center tracking-widest">TOP 3 POKÉMON</h3>
+                    <div id="top-pokes" class="grid grid-cols-3 gap-2"></div>
                 </div>
                 <div class="border-t pt-8">
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 text-center tracking-widest">Pokémon mais Populares</h3>
-                    <div class="max-w-[250px] mx-auto"><canvas id="chartPopularidade"></canvas></div>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 text-center tracking-widest">Dispositivos</h3>
+                    <div class="max-w-[400px] mx-auto"><canvas id="chartDispositivos"></canvas></div>
+                </div>
+                <div class="border-t pt-8">
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-4 text-center tracking-widest">Ranking de Tempo</h3>
+                    <div id="horas-ranking" class="space-y-2"></div>
                 </div>
             </div>
         </section>
@@ -130,48 +162,53 @@
 
     <div id="modal-gts" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h2 class="text-2xl font-black mb-6 text-slate-900 border-b-4 border-blue-500 pb-2">GTS DNS SETUP</h2>
+            <h2 class="text-2xl font-black mb-4 text-slate-900 border-b-4 border-blue-500 pb-2">GTS & TROCAS</h2>
             <div class="text-sm text-slate-600 space-y-4">
-                <div class="gts-step">
-                    <p class="font-bold text-slate-900 text-blue-600">1. Configuração de DNS</p>
-                    <p>Vá em **System Settings** > **Nintendo Wi-Fi Connection** > **Connection Settings**.</p>
-                    <p>Escolha sua conexão atual e procure por **"Auto-obtain DNS"**. Marque **NO**.</p>
-                    <p>Em **Primary DNS**, insira o código:</p>
-                    <p class="py-2"><code class="bg-blue-50 px-3 py-2 rounded-lg font-black text-blue-700 text-xl block text-center">178.62.43.212</code></p>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <p class="font-bold text-blue-900 mb-2">Regra de Conduta:</p>
+                    <p class="text-[11px] leading-relaxed italic">As trocas são permitidas <strong>apenas via GTS</strong> e exclusivamente entre os membros que estão participando deste grupo. Não realize trocas externas para obter vantagens fora da meta atual.</p>
                 </div>
+                
                 <div class="gts-step">
-                    <p class="font-bold text-slate-900 text-blue-600">2. DNS Secundário</p>
-                    <p>Pode preencher com <code class="bg-slate-100 px-1 rounded text-slate-900 font-mono">0.0.0.0</code> ou <code class="bg-slate-100 px-1 rounded text-slate-900 font-mono">igual ao primário</code>.</p>
+                    <p class="font-bold text-slate-900 text-blue-600">Configuração de DNS:</p>
+                    <p class="text-[12px]">Vá em Connection Settings > Auto-obtain DNS: **NO**.</p>
+                    <p class="py-2"><code class="bg-slate-900 px-3 py-2 rounded-lg font-black text-white text-lg block text-center">178.62.43.212</code></p>
+                    <p class="text-[11px]">DNS Secundário: 0.0.0.0 ou 8.8.8.8.</p>
                 </div>
-                <div class="bg-amber-50 p-4 border border-amber-200 rounded-2xl">
-                    <p class="font-bold text-amber-900 mb-1">Atenção ao Wi-Fi:</p>
-                    <p class="text-[11px] text-amber-800 leading-relaxed italic">
-                        O Nintendo DS (original/Lite) não suporta segurança WPA2. Para conectar, use o <strong>roteador do seu celular</strong> com a segurança configurada como <strong>"Nenhuma" ou "Aberta"</strong>.
-                    </p>
+
+                <div class="bg-amber-50 p-4 border border-amber-200 rounded-xl text-[11px] text-amber-800 italic">
+                    <strong>Atenção ao Wi-Fi:</strong> O DS original não suporta WPA2. Use o roteador do seu celular com a segurança <strong>"Aberta"</strong>.
                 </div>
             </div>
-            <button onclick="toggleModal('modal-gts')" class="mt-8 w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg active:scale-95 transition">Concluído!</button>
+            <button onclick="toggleModal('modal-gts')" class="mt-6 w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest">Entendido!</button>
         </div>
     </div>
 
     <div id="modal-regras" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center p-6 z-[100]">
-        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl relative">
-            <h2 class="text-2xl font-black mb-6 text-slate-900 border-b-4 border-red-500 pb-2 uppercase">Regras do Clube</h2>
-            <div class="space-y-5 text-sm text-slate-700">
-                <div class="flex gap-3">
-                    <span class="bg-red-100 text-red-600 w-6 h-6 flex items-center justify-center rounded-full font-bold flex-shrink-0">1</span>
-                    <p><strong>Meta da Semana:</strong> Jogar até vencer o 1º Ginásio (Triad Badge) na cidade de Striaton. O prazo final para esta etapa é sexta-feira, dia 01/03.</p>
-                </div>
-                <div class="flex gap-3">
-                    <span class="bg-red-100 text-red-600 w-6 h-6 flex items-center justify-center rounded-full font-bold flex-shrink-0">2</span>
-                    <p><strong>Spoiler:</strong> Proibido comentar sobre capturas, ginásios ou eventos da história que ocorram após a conquista da primeira insígnia.</p>
-                </div>
-                <div class="flex gap-3">
-                    <span class="bg-red-100 text-red-600 w-6 h-6 flex items-center justify-center rounded-full font-bold flex-shrink-0">3</span>
-                    <p><strong>Integridade:</strong> Somente Pokémon Black/White (1). Proibido o uso de cheats que alterem status ou facilitem capturas impossíveis no estágio atual.</p>
-                </div>
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl relative overflow-y-auto max-h-[90vh]">
+            <h2 class="text-2xl font-black mb-6 text-slate-900 border-b-4 border-red-500 pb-2 uppercase text-center italic">Regras e Metas</h2>
+            
+            <div class="space-y-6 text-[12px] text-slate-700">
+                <section>
+                    <h3 class="font-black text-red-600 mb-2 uppercase tracking-tighter">1. Regras Principais</h3>
+                    <ul class="space-y-2 list-none">
+                        <li>🚫 <strong>Spoilers:</strong> Não comente sobre capturas ou eventos após a meta semanal.</li>
+                        <li>🛡️ <strong>Integridade:</strong> Somente BW1 original. Proibido cheats de status ou capturas impossíveis.</li>
+                        <li>🗺️ <strong>Exploração:</strong> Não acesse áreas novas bloqueadas por Cut/Surf/etc se não estiverem na meta.</li>
+                    </ul>
+                </section>
+
+                <section class="bg-slate-50 p-4 rounded-2xl border">
+                    <h3 class="font-black text-slate-900 mb-2 uppercase tracking-tighter">2. Meta da Semana 2 (01 a 08/03)</h3>
+                    <p class="mb-2 italic">Objetivo: Basic Badge (Nacrene Gym)</p>
+                    <ul class="space-y-1 ml-4 list-disc text-[11px]">
+                        <li>Locais: Dreamyard, Rota 3, Wellspring Cave, Nacrene City e Pinwheel Forest (Área Externa).</li>
+                        <li><strong>Pare após o 2º Ginásio.</strong> Não entre na parte interna da Pinwheel Forest.</li>
+                    </ul>
+                </section>
             </div>
-            <button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest active:scale-95 transition">Entendido!</button>
+
+            <button onclick="toggleModal('modal-regras')" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition shadow-lg">Fechar</button>
         </div>
     </div>
 
@@ -179,12 +216,28 @@
         const firebaseConfig = { databaseURL: "https://clube-pokemon-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        lucide.createIcons();
 
-        const pokesDisponiveis = ["Patrat", "Watchog", "Lillipup", "Herdier", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Roggenrola", "Boldore", "Woobat", "Swoobat", "Audino"];
-        let capturados = [];
-        let teamLevels = {};
-        let myChart = null;
+        // LISTA DE POKÉMON (INTEGRADA)
+        const pokesMeta = ["Nenhum", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Audino", "Drilbur", "Excadrill", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk"];
+        
+        const dispIcons = { "Nintendo DS": "monitor-dot", "Nintendo 3DS": "layers", "Emulador PC": "monitor", "Emulador Android": "smartphone", "Outro": "gamepad-2" };
+
+        const slotsDiv = document.getElementById('team-slots');
+        for(let i=1; i<=6; i++) {
+            slotsDiv.innerHTML += `
+                <div class="flex gap-2 items-center bg-slate-50 p-2 rounded-xl border">
+                    <span class="text-[10px] font-black text-slate-400 w-4">${i}</span>
+                    <select id="slot-p-${i}" class="flex-1 bg-white border rounded-lg p-2 text-xs font-bold outline-none">
+                        ${pokesMeta.map(p => `<option value="${p}">${p}</option>`).join('')}
+                    </select>
+                    <input type="number" id="slot-l-${i}" value="5" class="w-12 border rounded-lg p-2 text-center text-xs font-black">
+                </div>`;
+        }
+
+        const dexGrid = document.getElementById('pokedex-grid');
+        pokesMeta.filter(p => p !== "Nenhum").forEach(pk => {
+            dexGrid.innerHTML += `<label class="flex items-center gap-2 border p-2 rounded-xl bg-white"><input type="checkbox" class="dex-check" value="${pk}"> ${pk}</label>`;
+        });
 
         window.onload = () => {
             const salvo = JSON.parse(localStorage.getItem('pkmn_club_data'));
@@ -193,103 +246,92 @@
                 document.getElementById('versao').value = salvo.versao || "Black";
                 document.getElementById('inicial').value = salvo.inicial || "Snivy";
                 document.getElementById('horas').value = salvo.horas || 0;
-                renderTeamInputs();
+                document.getElementById('dispositivo').value = salvo.dispositivo || "Nintendo DS";
+                document.getElementById('progresso').value = salvo.progresso || "nuvema";
+                if(salvo.team) salvo.team.forEach((pk, idx) => {
+                    document.getElementById(`slot-p-${idx+1}`).value = pk.species;
+                    document.getElementById(`slot-l-${idx+1}`).value = pk.level;
+                });
+                if(salvo.capturados) document.querySelectorAll('.dex-check').forEach(cb => {
+                    if(salvo.capturados.includes(cb.value)) cb.checked = true;
+                });
             }
+            lucide.createIcons();
         };
 
-        const dexGrid = document.getElementById('pokedex-grid');
-        pokesDisponiveis.forEach(pk => {
-            dexGrid.innerHTML += `<label class="flex items-center gap-2 border p-2 rounded-xl bg-white"><input type="checkbox" onchange="updateDex(this)" value="${pk}"> ${pk}</label>`;
-        });
-
         function changeTab(tab) {
-            ['perfil', 'pokedex', 'mapa', 'times-geral', 'estatisticas'].forEach(t => {
+            ['perfil', 'time', 'pokedex', 'mapa', 'times-geral', 'estatisticas'].forEach(t => {
                 document.getElementById('content-' + t).classList.toggle('hidden', t !== tab);
-                document.getElementById('tab-' + t).classList.toggle('tab-active', t === tab);
-                document.getElementById('tab-' + t).classList.toggle('text-slate-400', t !== tab);
+                const btn = document.getElementById('tab-' + t);
+                if(btn) btn.classList.toggle('tab-active', t === tab);
             });
+            lucide.createIcons();
         }
 
         function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 
-        function updateDex(el) {
-            if(el.checked) { capturados.push(el.value); teamLevels[el.value] = teamLevels[el.value] || 5; } 
-            else { capturados = capturados.filter(p => p !== el.value); }
-            renderTeamInputs();
-        }
-
-        function renderTeamInputs() {
-            const container = document.getElementById('team-list');
-            const inicialAtual = document.getElementById('inicial').value;
-            container.innerHTML = "";
-            const minhaLista = [inicialAtual, ...capturados].slice(0, 6);
-            minhaLista.forEach(pk => {
-                container.innerHTML += `<div class="flex items-center justify-between bg-slate-50 p-2 rounded-xl border"><span class="text-xs font-bold text-slate-700">${pk}</span><input type="number" value="${teamLevels[pk] || 5}" onchange="teamLevels['${pk}'] = this.value" class="w-12 border text-center text-xs font-bold p-1 rounded"></div>`;
-            });
-        }
-
         function salvarTudo() {
             const nome = document.getElementById('nome').value.trim();
-            const horas = parseFloat(document.getElementById('horas').value) || 0;
-            if(!nome) return alert("Digite seu nome!");
-            const inicial = document.getElementById('inicial').value;
-            const versao = document.getElementById('versao').value;
-            localStorage.setItem('pkmn_club_data', JSON.stringify({ nome, versao, inicial, horas }));
-            const finalTeam = [inicial, ...capturados].slice(0, 6).map(pk => ({ species: pk, level: parseInt(teamLevels[pk] || 5) }));
-            db.ref('jogadores/' + nome).set({ nome, versao, inicial, horas, progresso: document.getElementById('progresso').value, team: finalTeam, updateAt: Date.now() }).then(() => alert("Dados Sincronizados!"));
+            if(!nome) return alert("Nome necessário!");
+            const finalTeam = [];
+            for(let i=1; i<=6; i++) {
+                const sp = document.getElementById(`slot-p-${i}`).value;
+                const lv = parseInt(document.getElementById(`slot-l-${i}`).value) || 0;
+                if(sp !== "Nenhum") finalTeam.push({ species: sp, level: lv });
+            }
+            const dexCheckeds = [];
+            document.querySelectorAll('.dex-check:checked').forEach(cb => dexCheckeds.push(cb.value));
+
+            const payload = { nome, versao: document.getElementById('versao').value, inicial: document.getElementById('inicial').value, horas: parseFloat(document.getElementById('horas').value) || 0, dispositivo: document.getElementById('dispositivo').value, team: finalTeam, capturados: dexCheckeds, progresso: document.getElementById('progresso').value, updateAt: Date.now() };
+            localStorage.setItem('pkmn_club_data', JSON.stringify(payload));
+            db.ref('jogadores/' + nome).set(payload).then(() => alert("Sincronizado!"));
         }
 
         db.ref('jogadores').on('value', (snap) => {
             const data = snap.val(); if(!data) return;
             const jogadores = Object.values(data);
-            ['list-nuvema', 'list-rotas', 'list-ginasio', 'spot-nuvema', 'spot-rotas', 'spot-ginasio'].forEach(id => document.getElementById(id).innerHTML = "");
-            const rankList = document.getElementById('ranking-list');
+            ['list-nuvema', 'list-ginasio', 'list-rota3', 'list-nacrene', 'list-ginasio2', 'list-pinwheel', 'spot-nuvema', 'spot-ginasio', 'spot-rota3', 'spot-nacrene', 'spot-ginasio2', 'spot-pinwheel'].forEach(id => {
+                const el = document.getElementById(id); if(el) el.innerHTML = "";
+            });
+            
+            const rankList = document.getElementById('content-times-geral');
             const horasRank = document.getElementById('horas-ranking');
             rankList.innerHTML = ""; horasRank.innerHTML = "";
             
-            const pesoProgresso = { 'ginasio': 3, 'rotas': 2, 'nuvema': 1 };
+            const pesoProgresso = { 'ginasio2': 4, 'nacrene': 3, 'pinwheel': 5, 'rota3': 2, 'ginasio': 1, 'nuvema': 0 };
             jogadores.sort((a, b) => {
                 if (pesoProgresso[b.progresso] !== pesoProgresso[a.progresso]) return pesoProgresso[b.progresso] - pesoProgresso[a.progresso];
-                const m = p => p.team ? p.team.reduce((s, pk) => s + pk.level, 0) / p.team.length : 0;
+                const m = p => p.team ? p.team.reduce((s, pk) => s + pk.level, 0) / Math.max(p.team.length, 1) : 0;
                 return m(b) - m(a);
             });
 
-            const contagemPokes = {};
-           jogadores.forEach(p => {
+            const statsPokes = {}; const statsDisp = {};
+            jogadores.forEach(p => {
                 const color = p.versao === 'Black' ? 'bg-slate-900 text-white' : 'bg-white border text-slate-900';
+                const avatarTime = `<div class="w-6 h-6 rounded-full ${color} text-[7px] flex items-center justify-center font-black border-2 border-white shadow-sm">${p.nome.substring(0,2).toUpperCase()}</div>`;
+                const avatarMap = `<div class="w-2 h-2 rounded-full ${color} border border-white shadow-sm" title="${p.nome}"></div>`;
                 
-                const avatarTimeline = `<div class="w-7 h-7 rounded-full ${color} text-[8px] flex items-center justify-center font-black border-2 border-white shadow-sm" title="${p.nome}">${p.nome.substring(0,2).toUpperCase()}</div>`;
-                
-                // Adicionei o title="${p.nome}" abaixo para mostrar o nome no mapa:
-                const avatarMapa = `<div class="w-2 h-2 rounded-full ${color} border border-white shadow-sm" title="${p.nome}"></div>`;
-                
-                const list = document.getElementById('list-' + p.progresso); if(list) list.innerHTML += avatarTimeline;
-                const spot = document.getElementById('spot-' + p.progresso); if(spot) spot.innerHTML += avatarMapa;
+                if(document.getElementById('list-' + p.progresso)) document.getElementById('list-' + p.progresso).innerHTML += avatarTime;
+                if(document.getElementById('spot-' + p.progresso)) document.getElementById('spot-' + p.progresso).innerHTML += avatarMap;
 
-                const media = p.team ? (p.team.reduce((sum, pk) => sum + pk.level, 0) / p.team.length).toFixed(1) : 0;
-                rankList.innerHTML += `<div class="bg-white border-2 border-slate-100 rounded-2xl p-4 shadow-sm relative">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="font-black text-sm uppercase tracking-tight ${p.versao === 'Black' ? 'text-slate-900' : 'text-blue-500'}">${p.nome}</span>
-                        <span class="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-500">Média Lvl: ${media}</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${p.team?.map(pk => `<div class="flex justify-between text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-100"><span>${pk.species}</span><span class="font-bold text-red-500">Lv.${pk.level}</span></div>`).join('')}
-                    </div>
-                </div>`;
-                
-                p.team?.forEach(pk => { contagemPokes[pk.species] = (contagemPokes[pk.species] || 0) + 1; });
+                statsDisp[p.dispositivo] = (statsDisp[p.dispositivo] || 0) + 1;
+                rankList.innerHTML += `<div class="bg-white border-2 border-slate-100 rounded-2xl p-4 shadow-sm relative"><div class="flex justify-between items-center mb-3"><div class="flex items-center gap-2"><span class="font-black text-sm uppercase ${p.versao === 'Black' ? 'text-slate-900' : 'text-blue-500'}">${p.nome}</span><i data-lucide="${dispIcons[p.dispositivo]}" class="w-3 h-3 text-slate-400"></i></div><div class="flex items-center gap-1 text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-500"><i data-lucide="clock" class="w-3 h-3"></i><span>${p.horas || 0}h</span></div></div><div class="grid grid-cols-2 gap-2">${p.team?.map(pk => `<div class="flex justify-between text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-100"><span>${pk.species}</span><span class="font-bold text-red-500">Lv.${pk.level}</span></div>`).join('')}</div></div>`;
+                p.team?.forEach(pk => { statsPokes[pk.species] = (statsPokes[pk.species] || 0) + 1; });
             });
 
             [...jogadores].sort((a,b) => (b.horas || 0) - (a.horas || 0)).forEach((p, idx) => {
                 horasRank.innerHTML += `<div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border"><span>${idx+1}. ${p.nome}</span><span class="font-black text-blue-600">${p.horas || 0}h</span></div>`;
             });
-            renderChart(contagemPokes);
+
+            const top3 = Object.entries(statsPokes).sort((a,b) => b[1] - a[1]).slice(0, 3);
+            document.getElementById('top-pokes').innerHTML = top3.map(([pk, count], i) => `<div class="bg-white border-2 border-slate-100 rounded-2xl p-3 text-center"><div class="text-[10px] font-black text-slate-400">#${i+1}</div><div class="text-xs font-bold">${pk}</div><div class="text-[10px] text-blue-500 font-bold">${count} Treinadores</div></div>`).join('');
+            renderChart(statsDisp); lucide.createIcons();
         });
 
-        function renderChart(contagem) {
-            const ctx = document.getElementById('chartPopularidade').getContext('2d');
-            if (myChart) myChart.destroy();
-            myChart = new Chart(ctx, { type: 'pie', data: { labels: Object.keys(contagem), datasets: [{ data: Object.values(contagem), backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'] }] }, options: { plugins: { legend: { display: false } } } });
+        function renderChart(disps) {
+            const ctx = document.getElementById('chartDispositivos').getContext('2d');
+            if (window.myChartDisp) window.myChartDisp.destroy();
+            window.myChartDisp = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(disps), datasets: [{ data: Object.values(disps), backgroundColor: '#3b82f6', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
         }
     </script>
 </body>
